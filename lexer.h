@@ -2,6 +2,7 @@
 #define LEXER_H
 
 #include <stdint.h>
+#include "token.h"
 
 typedef struct {
 	char *file_name;
@@ -17,6 +18,7 @@ typedef enum {
 } err_code;
 
 err_code lexer_init(lexer_t *l, char *file_name);
+token_t *next_token(lexer_t *l);
 
 #define LEXER_IMPLEMENTATION
 #ifdef LEXER_IMPLEMENTATION
@@ -51,6 +53,18 @@ err_code lexer_init(lexer_t *l, char *file_name) {
 	if (res != NONE) return res;
 	return NONE;
 }
+
+token_t *next_token(lexer_t *l) {
+	if (!l) return NULL;
+	token_t *tok = malloc(sizeof(token_t));
+	if (tok == NULL) return NULL;
+	tok -> text = l -> data[l -> curr];
+	do {
+		if (l -> data != ' ') tok -> len++;
+	} while (l -> curr < l -> len);
+	return tok;
+}
+
 #endif
 
 #endif
